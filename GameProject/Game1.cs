@@ -57,6 +57,8 @@ namespace GameProject
 			// set resolution
 			graphics.PreferredBackBufferWidth = GameConstants.WindowWidth;
 			graphics.PreferredBackBufferHeight = GameConstants.WindowHeight;
+
+            IsMouseVisible = true;
 		}
 
 		/// <summary>
@@ -81,12 +83,14 @@ namespace GameProject
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
-			// load audio content
+            // load audio content
 
-			// load sprite font
+            // load sprite font
 
-			// load projectile and explosion sprites
-            
+            // load projectile and explosion sprites
+            frenchFriesSprite = Content.Load<Texture2D>(@"graphics/frenchfries");
+            teddyBearProjectileSprite = Content.Load<Texture2D>(@"graphics/teddybearprojectile");
+
 			// add initial game objects
             burger = new Burger(Content, @"graphics/burger", 
                                 GameConstants.WindowWidth / 2, GameConstants.WindowHeight *7/8, 
@@ -109,9 +113,11 @@ namespace GameProject
 			    Keyboard.GetState ().IsKeyDown (Keys.Escape)) {
 				Exit ();
 			}
-			#endif
+            #endif
 
-			// get current mouse state and update burger
+            // get current mouse state and update burger
+            MouseState mouse = Mouse.GetState();
+            burger.Update(gameTime, mouse);
 
 			// update other game objects
 			foreach (TeddyBear bear in bears)
@@ -186,7 +192,18 @@ namespace GameProject
 		public static Texture2D GetProjectileSprite(ProjectileType type)
 		{
 			// replace with code to return correct projectile sprite based on projectile type
-			return frenchFriesSprite;
+            if (type == ProjectileType.FrenchFries)
+            {
+                return frenchFriesSprite;
+            }
+            else if (type == ProjectileType.TeddyBear)
+            {
+                return teddyBearProjectileSprite;
+            }
+            else   // Default to frenchFriesSprite in case of unknown type
+            {
+                return frenchFriesSprite;
+            }
 		}
 
 		/// <summary>
@@ -195,7 +212,7 @@ namespace GameProject
 		/// <param name="projectile">the projectile to add</param>
 		public static void AddProjectile(Projectile projectile)
 		{
-
+            projectiles.Add(projectile);
 		}
 
 		#endregion
